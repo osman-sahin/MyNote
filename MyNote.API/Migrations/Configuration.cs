@@ -1,5 +1,9 @@
-namespace MyNote.API.Migrations
+﻿namespace MyNote.API.Migrations
 {
+    using Microsoft.Ajax.Utilities;
+    using Microsoft.AspNet.Identity;
+    using Microsoft.AspNet.Identity.EntityFramework;
+    using MyNote.API.Models;
     using System;
     using System.Data.Entity;
     using System.Data.Entity.Migrations;
@@ -14,10 +18,25 @@ namespace MyNote.API.Migrations
 
         protected override void Seed(MyNote.API.Models.ApplicationDbContext context)
         {
-            //  This method will be called after migrating to the latest version.
+            var userName = "osmansahin.eng@gmail.com";
+            if (!context.Users.Any(u => u.UserName == userName))
+            {
+                var store = new UserStore<ApplicationUser>(context);
+                var manager = new UserManager<ApplicationUser>(store);
+                var user = new ApplicationUser { UserName = userName, Email = userName, EmailConfirmed = true };
 
-            //  You can use the DbSet<T>.AddOrUpdate() helper extension method 
-            //  to avoid creating duplicate seed data.
+                manager.Create(user, "Password2!");
+
+                for (int i = 0; i <= 5; i++)
+                    context.Notes.Add(new Note
+                    {
+                        AuthorId = user.Id,
+                        Title = "Sample Title 1",
+                        Content = "Sample Lorem Ipsum elit in malaesı semper piss, id sollicitudin urna fermentum.",
+                        CreationTime = DateTime.Now,
+                        ModificationTime = DateTime.Now
+                    });
+            }
         }
     }
 }
