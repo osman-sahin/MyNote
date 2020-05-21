@@ -31,7 +31,7 @@
                     context.Notes.Add(new Note
                     {
                         AuthorId = user.Id,
-                        Title = "Sample Title 1",
+                        Title = "Sample Title " + i,
                         Content = "Sample Lorem Ipsum elit in malaesı semper piss, id sollicitudin urna fermentum.",
                         CreationTime = DateTime.Now,
                         ModificationTime = DateTime.Now

@@ -32,6 +32,8 @@ namespace MyNote.API
             app.UseExternalSignInCookie(DefaultAuthenticationTypes.ExternalCookie);
 
             // Configure the application for OAuth based flow
+            // https://docs.microsoft.com/en-us/aspnet/web-api/overview/security/individual-accounts-in-web-api
+
             PublicClientId = "self";
             OAuthOptions = new OAuthAuthorizationServerOptions
             {
