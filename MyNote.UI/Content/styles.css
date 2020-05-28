@@ -3,14 +3,16 @@
 }
 
 .page {
-    /*display: none;*/
+    display: none;
     height: 100%;
+
 }
 .alerts {
     display: none;
 }
 .alerts ul{
     margin-bottom: 0;
+    padding-left: 1rem;
 }
 
 .loading {

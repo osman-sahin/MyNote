@@ -3,16 +3,54 @@ var apiUrl = "https://localhost:44365/";
 
 
 // Functions
-function isLoggedIn() {
+function checkLogin() {
     // todo: sessionstorage ve localstorage da tutulan login bilgilerine bakarak
     // login olup olmadığına karar ver ve eğer logins uygulamayı aç
     // login değilse login/register sayfasını göster
-}
+    var loginData = getLoginData();
 
-function loginData() {
-    // todo: sessionstorage da, eğer orada bulamadıysan
-    // localstorage da kayıtlı login data yı json'dan object'e dönüştür ve yolla
-    // eğer yoksa null yolla
+    if (!loginData || !loginData.access_token) {
+        showLoginPage();
+        return;
+    }
+
+    //token gecerli mi?
+    $.ajax({
+        url: apiUrl + "api/Account/UserInfo",
+        type: "GET",
+        headers: { Authorization: "Bearer " + loginData.access_token },
+        success: function (data) {
+            showAppPage();
+        },
+        error: function () {
+            showLoginPage();
+        }
+    });
+}
+function showAppPage() {
+    $(".only-logged-out").hide();
+    $(".only-logged-in").show();
+    $(".page").hide();
+    $("#page-app").show();
+}
+function showLoginPage() {
+    $(".only-logged-in").hide();
+    $(".only-logged-out").show();
+    $(".page").hide();
+    $("#page-login").show();
+}
+function getLoginData() {
+
+    var json = sessionStorage["login"] || localStorage["login"];
+
+    if (json) {
+        try {
+            return JSON.parse(json);
+        } catch (e) {
+            return null;
+        }
+    }
+    return null;
 }
 function success(message) {
     resetLoginForms();
@@ -85,11 +123,14 @@ $("#signinform").submit(function (event) {
             localStorage.removeItem("login");
             sessionStorage["login"] = datastor;
         }
+
+        resetLoginForms();
         success("You been logged in successfully. Now, you are being redirected automatically..");
 
         setTimeout(function () {
-            $("#login").hide();
-        }, 500);
+            // resetLoginForm konulabilir.
+            showAppPage();
+        }, 1000);
 
     }).fail(function (xhr) {
         errorMessage(xhr.responseJSON.error_description);
@@ -110,7 +151,19 @@ $(document).ajaxStop(function () {
     $(".loading").addClass("d-none");
 })
 
-$(".navbar-login a").click(function () {
+$(".navbar-login a").click(function (event) {
+    event.preventDefault();
     var href = $(this).attr("href");
     $('#pills-tab a[href="' + href + '"]').tab('show'); // select by tab name
 })
+
+$("#btnLogout").click(function (event) {
+    event.preventDefault();
+    sessionStorage.removeItem("login");
+    localStorage.removeItem("login");
+    resetLoginForms();  // yukarı da konulabilir
+    showLoginPage();
+});
+
+// Actions
+checkLogin();
