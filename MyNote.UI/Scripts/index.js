@@ -1,6 +1,8 @@
 ﻿// Globals
 var apiUrl = "https://localhost:44365/";
 
+var selectedNote = null;
+var selectedLink = null;
 
 // Functions
 function checkLogin() {
@@ -15,22 +17,35 @@ function checkLogin() {
     }
 
     //token gecerli mi?
-    $.ajax({
-        url: apiUrl + "api/Account/UserInfo",
-        type: "GET",
-        headers: { Authorization: "Bearer " + loginData.access_token },
-        success: function (data) {
+    ajax("api/Account/UserInfo", "GET", null,
+        function (data) {
             showAppPage();
         },
-        error: function () {
+        function () {
             showLoginPage();
-        }
-    });
+        });
 }
 function showAppPage() {
     $(".only-logged-out").hide();
     $(".only-logged-in").show();
     $(".page").hide();
+
+    // retrieve notes
+    ajax("api/Notes/List", "GET", null,
+        function (data) {
+
+            $("#notes").html("");
+            for (var i = 0; i < data.length; i++) {
+                var a = $("<a/>").attr("href", "#").addClass("list-group-item list-group-item-action show-note")
+                    .text(data[i].Title)
+                    .prop("note", data[i]);
+                $("#notes").append(a);
+            }
+        },
+        function () {
+
+        });
+
     $("#page-app").show();
 }
 function showLoginPage() {
@@ -38,6 +53,31 @@ function showLoginPage() {
     $(".only-logged-out").show();
     $(".page").hide();
     $("#page-login").show();
+}
+function getAuthHeader() {
+    return { Authorization: "Bearer " + getLoginData().access_token };
+}
+function ajax(url, type, data, successFunc, errorFunc) {
+    $.ajax({
+        url: apiUrl + url,
+        type: type,
+        data: data,
+        headers: getAuthHeader(),
+        success: successFunc,
+        error: errorFunc
+    });
+}
+function updateNote() {
+    ajax("api/Notes/Update/" + selectedNote.Id, "PUT",
+        { Id: selectedNote.Id, Title: $("#note-title").val(), Content: $("#note-content").val() },
+        function (data) {
+            selectedLink.note = data;
+            selectedLink.text = data.Title;
+        },
+        function () {
+            alert("Update failed!");
+        }
+    );
 }
 function getLoginData() {
 
@@ -163,6 +203,28 @@ $("#btnLogout").click(function (event) {
     localStorage.removeItem("login");
     resetLoginForms();  // yukarı da konulabilir
     showLoginPage();
+});
+
+$("body").on("click", ".show-note", function (event) {
+    event.preventDefault();
+    selectedLink = this;
+    selectedNote = this.note;
+    $("#note-title").val(selectedNote.Title);
+    $("#note-content").val(selectedNote.Content);
+
+    $(".show-note").removeClass("bg-success text-white");
+    $(this).addClass("bg-success text-white");
+});
+
+$("#frmNote").submit(function (event) {
+    event.preventDefault();
+
+    if (selectedNote) {
+        updateNote();
+    }
+    else {
+        addNote();
+    }
 });
 
 // Actions
