@@ -1,5 +1,6 @@
 ﻿// Globals
-var apiUrl = "https://localhost:44365/";
+// var apiUrl = "https://localhost:44365/";
+var apiUrl = "https://noteapi.osahin.net/";
 
 var selectedNote = null;
 var selectedLink = null;
@@ -199,10 +200,7 @@ $("#signinform").submit(function (event) {
         resetLoginForms();
         success("You been logged in successfully. Now, you are being redirected automatically..");
 
-        setTimeout(function () {
-            // resetLoginForm konulabilir.
-            showAppPage();
-        }, 1000);
+        showAppPage();
 
     }).fail(function (xhr) {
         errorMessage(xhr.responseJSON.error_description);
