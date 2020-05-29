@@ -36,10 +36,8 @@ function showAppPage() {
 
             $("#notes").html("");
             for (var i = 0; i < data.length; i++) {
-                var a = $("<a/>").attr("href", "#").addClass("list-group-item list-group-item-action show-note")
-                    .text(data[i].Title)
-                    .prop("note", data[i]);
-                $("#notes").append(a);
+
+                addMenuLink(data[i]);
             }
         },
         function () {
@@ -47,6 +45,22 @@ function showAppPage() {
         });
 
     $("#page-app").show();
+}
+function addMenuLink(note, isActive = false) {
+    var a = $("<a/>")
+        .attr("href", "#")
+        .addClass("list-group-item list-group-item-action show-note")
+        .text(note.Title)
+        .prop("note", note);
+
+    if (isActive) {
+        $(".show-note").removeClass("bg-success text-white");
+        a.addClass("bg-success text-white");
+        selectedLink = a.get(0);
+        selectedNote = note;
+    }
+
+    $("#notes").prepend(a);
 }
 function showLoginPage() {
     $(".only-logged-in").hide();
@@ -67,15 +81,26 @@ function ajax(url, type, data, successFunc, errorFunc) {
         error: errorFunc
     });
 }
+function addNote() {
+    ajax("api/Notes/New", "POST",
+        { Title: $("#note-title").val(), Content: $("#note-content").val() },
+        function (data) {
+            addMenuLink(data, true);
+        },
+        function () {
+
+        }
+    );
+}
 function updateNote() {
     ajax("api/Notes/Update/" + selectedNote.Id, "PUT",
         { Id: selectedNote.Id, Title: $("#note-title").val(), Content: $("#note-content").val() },
         function (data) {
             selectedLink.note = data;
-            selectedLink.text = data.Title;
+            selectedLink.textContent = data.Title;
         },
         function () {
-            alert("Update failed!");
+
         }
     );
 }
@@ -134,6 +159,13 @@ function resetLoginForms() {
     $('#login form').each(function () {
         this.reset();
     });
+}
+function resetNoteForm() {
+    selectedLink = null;
+    selectedNote = null;
+    $(".show-note").removeClass("bg-success text-white");
+    $("#note-title").val("");
+    $("#note-content").val("");
 }
 
 // Events
@@ -199,10 +231,15 @@ $(".navbar-login a").click(function (event) {
 
 $("#btnLogout").click(function (event) {
     event.preventDefault();
+    resetNoteForm();
     sessionStorage.removeItem("login");
     localStorage.removeItem("login");
     resetLoginForms();  // yukarı da konulabilir
     showLoginPage();
+});
+
+$(".add-new-note").click(function () {
+    resetNoteForm();
 });
 
 $("body").on("click", ".show-note", function (event) {
@@ -226,6 +263,27 @@ $("#frmNote").submit(function (event) {
         addNote();
     }
 });
+
+$("#btnDelete").click(function () {
+    if (selectedNote) {
+        if (confirm("Are you sure to delete selected note?")) {
+            ajax("api/Notes/Delete/" + selectedNote.Id, "DELETE", null,
+                function () {
+                    $(selectedLink).remove();
+                    resetNoteForm();
+                },
+                function () {
+
+                }
+            )
+        }
+    }
+    else {
+        if (confirm("Are you sure to discard unsaved changes?")) {
+            resetNoteForm();
+        }
+    }
+})
 
 // Actions
 checkLogin();
