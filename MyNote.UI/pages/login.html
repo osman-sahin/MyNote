@@ -10,21 +10,21 @@
                     <div class="col-sm-12 border border-primary shadow rounded py-4">
                         <h1 class="mb-3 text-center">Login</h1>
                         <!--<div class="text-center"><img src="https://placehold.it/80x80" class="rounded-circle border p-1"></div>-->
-                        <div class="alert alerts"></div>
-                        <form method="post" id="signinform">
+                        <alerts></alerts>
+                        <form method="post" id="signinform" ng-submit="loginSubmit()">
                             <input type="hidden" name="grant_type" value="password" />
                             <div class="form-group">
                                 <label class="font-weight-bold">Email <span class="text-danger">*</span></label>
-                                <input type="email" name="Username" id="signinemail" class="form-control" placeholder="Email" required>
+                                <input ng-model="loginForm.username" type="email" name="Username" id="signinemail" class="form-control" placeholder="Email" required>
                             </div>
                             <div class="form-group">
                                 <label class="font-weight-bold">Password <span class="text-danger">*</span></label>
-                                <input type="password" name="Password" id="signinpassword" class="form-control" placeholder="Password" required>
+                                <input ng-model="loginForm.password" type="password" name="Password" id="signinpassword" class="form-control" placeholder="Password" required>
                             </div>
                             <div class="form-group">
                                 <div class="row">
                                     <div class="col">
-                                        <label><input type="checkbox" id="rememberme"> Remember me</label>
+                                        <label><input ng-model="rememberMe" type="checkbox" id="rememberme"> Remember me</label>
                                     </div>
                                     <div class="col text-right"> <a href="#" data-toggle="modal" data-target="#forgotPass">Forgot Password?</a> </div>
                                 </div>
@@ -39,19 +39,19 @@
                     <div class="col-sm-12 border border-primary shadow rounded py-4">
                         <h1 class="mb-3 text-center">Register</h1>
                         <!--<div class="text-center"><img src="https://placehold.it/80x80" class="rounded-circle border p-1"></div>-->
-                        <div class="alert alerts"></div>
-                        <form method="post" id="signupform">
+                        <alerts></alerts>
+                        <form method="post" id="signupform" ng-submit="registerSubmit()">
                             <div class="form-group">
                                 <label class="font-weight-bold">Email <span class="text-danger">*</span></label>
-                                <input type="email" name="Email" id="signupemail" class="form-control" placeholder="Email" required>
+                                <input ng-model="registerForm.Email" type="email" name="Email" id="signupemail" class="form-control" placeholder="Email" required>
                             </div>
                             <div class="form-group">
                                 <label class="font-weight-bold">Password <span class="text-danger">*</span></label>
-                                <input type="password" name="Password" id="signuppassword" class="form-control" placeholder="Password" required>
+                                <input ng-model="registerForm.Password" type="password" name="Password" id="signuppassword" class="form-control" placeholder="Password" required>
                             </div>
                             <div class="form-group">
                                 <label class="font-weight-bold">Confirm Password <span class="text-danger">*</span></label>
-                                <input type="password" name="ConfirmPassword" id="signupcpassword" class="form-control" placeholder="Password" required>
+                                <input ng-model="registerForm.ConfirmPassword" type="password" name="ConfirmPassword" id="signupcpassword" class="form-control" placeholder="Password" required>
                             </div>
                             <div class="form-group mt-4">
                                 <input type="submit" name="signupsubmit" id="signupsubmit" value="Sign Up" class="btn btn-block btn-primary">
@@ -89,3 +89,4 @@
         </div>
     </div>
 </div>
+

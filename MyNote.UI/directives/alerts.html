@@ -1,0 +1,7 @@
+﻿<div ng-if="alerts.length > 0 && alertFor == currentTab" class="alert alerts-container alert-{{ alertType }}">
+    <span ng-if="alerts.length == 1">{{alerts[0]}}</span>
+
+    <ul ng-if="alerts.length > 1">
+        <li ng-repeat="alert in alerts">{{alert}}</li>
+    </ul>
+</div>
