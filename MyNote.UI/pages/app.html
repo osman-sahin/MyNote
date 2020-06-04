@@ -2,22 +2,24 @@
 <div class="container-fluid">
     <div class="row my-3">
         <div class="col-md-4 col-lg-3 mb-3">
-            <button type="button" class="btn btn-outline-success mb-2 add-new-note w-100">
+            <button ng-click="newNote()" type="button" class="btn btn-outline-success mb-2 add-new-note w-100">
                 <i class="fas fa-plus"> <em>New Note</em></i>
             </button>
-            <div class="list-group" id="notes"></div>
+            <div class="list-group" id="notes">
+                <a ng-repeat="note in notes | orderBy:'Id':true" ng-click="showNote($event, note)" ng-class="{'bg-success text-white': note.Id == currentNote.Id}" href="#" class="list-group-item list-group-item-action">{{ note.Title }}</a>
+            </div>
         </div>
         <div class="col-md-8 col-lg-9">
-            <form id="frmNote">
+            <form id="frmNote" ng-submit="submitNote()">
                 <div class="form-group">
-                    <input id="note-title" type="text" class="form-control" placeholder="Title..." required />
+                    <input ng-model="noteForm.Title" id="note-title" type="text" class="form-control" placeholder="Title..." required />
                 </div>
                 <div class="form-group">
-                    <textarea id="note-content" cols="20" rows="10" placeholder="Write your note here..." class="form-control"></textarea>
+                    <textarea ng-model="noteForm.Content" id="note-content" cols="20" rows="10" placeholder="Write your note here..." class="form-control"></textarea>
                 </div>
                 <div>
                     <button type="submit" class="btn btn-success">Save</button>
-                    <button id="btnDelete" type="button" class="btn btn-danger"><i class="fas fa-trash"></i></button>
+                    <button ng-click="deleteNote()" id="btnDelete" type="button" class="btn btn-danger"><i class="fas fa-trash"></i></button>
                 </div>
             </form>
         </div>
