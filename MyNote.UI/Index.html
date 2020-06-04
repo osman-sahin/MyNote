@@ -26,17 +26,19 @@
     <header>
         <!-- Fixed navbar -->
         <nav class="navbar navbar-expand-md navbar-light fixed-top bg-light">
-            <a class="navbar-brand" href="">My Notes</a>
+            <a class="navbar-brand p-0 m-0" href="#!/">
+                <img src="favicon.ico" width="40" />
+            </a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarCollapse">
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item active">
-                        <a class="nav-link" href="">Home</a>
+                        <a class="nav-link" href="#!/">Home</a>
                     </li>
                 </ul>
-                <ul class="navbar-nav navbar-login only-logged-out">
+                <ul ng-show="!isLoggedIn()" class="navbar-nav navbar-login only-logged-out">
                     <li class="nav-item">
                         <a class="nav-link" href="#pills-signin">Log In</a>
                     </li>
@@ -44,9 +46,9 @@
                         <a class="nav-link" href="#pills-signup">Register</a>
                     </li>
                 </ul>
-                <ul class="navbar-nav only-logged-in">
+                <ul ng-show="isLoggedIn()" class="navbar-nav only-logged-in">
                     <li class="nav-item">
-                        <a class="nav-link" href="#" id="btnLogout">Logout</a>
+                        <a class="nav-link" href="#" id="btnLogout" ng-click="logout()">Logout ({{loginData().userName}})</a>
                     </li>
                 </ul>
             </div>
